@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: BSD-3-Clause
+# Copyright(c) 2019 Paras Jha
+#
+
+KMOD=	rte_kni
+SRCS=	kni.c device_if.h bus_if.h
+
+.include <bsd.kmod.mk>
