@@ -5,5 +5,6 @@ include $(RTE_SDK)/mk/rte.vars.mk
 
 DIRS-$(CONFIG_RTE_EXEC_ENV_FREEBSD) += contigmem
 DIRS-$(CONFIG_RTE_EXEC_ENV_FREEBSD) += nic_uio
+DIRS-$(CONFIG_RTE_EXEC_ENV_FREEBSD) += kni
 
 include $(RTE_SDK)/mk/rte.subdir.mk
