@@ -115,6 +115,9 @@ DEPDIRS-librte_telemetry := librte_eal librte_metrics librte_ethdev
 ifeq ($(CONFIG_RTE_EXEC_ENV_LINUX),y)
 DIRS-$(CONFIG_RTE_LIBRTE_KNI) += librte_kni
 endif
+ifeq ($(CONFIG_RTE_EXEC_ENV_FREEBSD),y)
+DIRS-$(CONFIG_RTE_LIBRTE_KNI) += librte_kni
+endif
 DEPDIRS-librte_kni := librte_eal librte_mempool librte_mbuf librte_ethdev
 DEPDIRS-librte_kni += librte_pci
 
