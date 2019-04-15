@@ -2,7 +2,7 @@
  * Copyright(c) 2010-2014 Intel Corporation
  */
 
-#ifndef RTE_EXEC_ENV_LINUX
+#if !defined(RTE_EXEC_ENV_LINUX) && !defined(RTE_EXEC_ENV_FREEBSD)
 #error "KNI is not supported"
 #endif
 
