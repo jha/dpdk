@@ -101,6 +101,9 @@ _LDLIBS-$(CONFIG_RTE_LIBRTE_SCHED)          += -lrte_sched
 ifeq ($(CONFIG_RTE_EXEC_ENV_LINUX),y)
 _LDLIBS-$(CONFIG_RTE_LIBRTE_KNI)            += -lrte_kni
 endif
+ifeq ($(CONFIG_RTE_EXEC_ENV_FREEBSD),y)
+_LDLIBS-$(CONFIG_RTE_LIBRTE_KNI)			+= -lrte_kni
+endif
 
 ifeq ($(CONFIG_RTE_LIBRTE_PMD_OCTEONTX_CRYPTO),y)
 _LDLIBS-y += -lrte_common_cpt
