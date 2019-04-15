@@ -87,6 +87,7 @@ CFLAGS_eal_hpet.o += -Wno-return-type
 endif
 
 INC := rte_os.h
+INC += rte_kni_common.h
 
 SYMLINK-$(CONFIG_RTE_EXEC_ENV_FREEBSD)-include := $(addprefix include/,$(INC))
 
