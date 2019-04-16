@@ -3,6 +3,6 @@
 #
 
 KMOD=	rte_kni
-SRCS=	kni.c device_if.h bus_if.h
+SRCS=	kni.c kni_cdev.h kni_cdev.c device_if.h bus_if.h
 
 .include <bsd.kmod.mk>

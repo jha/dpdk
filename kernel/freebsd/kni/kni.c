@@ -13,7 +13,31 @@ __FBSDID("$FreeBSD$");
 #include <sys/malloc.h>
 #include <sys/module.h>
 
+#include "kni_cdev.h"
+
 MALLOC_DEFINE(M_RTE_KNI, "rte_kni", "rte_kni allocations");
+
+static int
+kni_mod_load(void)
+{
+	int error;
+
+	error = kni_cdev_init();
+	if (error != 0)
+		return error;
+	return 0;
+}
+
+static int
+kni_mod_unload(void)
+{
+	int error;
+
+	error = kni_cdev_free();
+	if (error != 0)
+		return error;
+	return 0;
+}
 
 static int
 kni_modevent(module_t mod, int type, void *arg)
@@ -22,10 +46,10 @@ kni_modevent(module_t mod, int type, void *arg)
 
 	switch (type) {
 	case MOD_LOAD:
-		error = 0;
+		error = kni_mod_load();
 		break;
 	case MOD_UNLOAD:
-		error = 0;
+		error = kni_mod_unload();
 		break;
 	default:
 		break;
