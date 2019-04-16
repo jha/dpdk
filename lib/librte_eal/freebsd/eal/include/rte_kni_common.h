@@ -6,9 +6,8 @@
 #ifndef _RTE_KNI_COMMON_H_
 #define _RTE_KNI_COMMON_H_
 
-#ifdef __KERNEL__
-#include <sys/net/if.h>
-#include <asm/barrier.h>
+#ifdef _KERNEL
+typedef uintptr_t phys_addr_t;
 #define RTE_STD_C11
 #else
 #include <rte_common.h>
