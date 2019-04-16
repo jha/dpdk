@@ -83,7 +83,7 @@ kni_cdev_close(struct cdev *dev, int fflag, int devtype, struct thread *td)
 }
 
 static struct cdevsw kni_ops = {
-	.d_name			= "kni",
+	.d_name			= KNI_DEVICE,
 	.d_version		= D_VERSION,
 	.d_flags		= D_TRACKCLOSE,
 	.d_open			= kni_cdev_open,
@@ -107,7 +107,7 @@ kni_cdev_init(void)
 	/* Try to create the character device driver /dev/kni. On failure, clean
 	 * up the rte_kni_cdev object and free its mutex */
 	rte_kni_cdev->cdev = make_dev(&kni_ops, 0,
-		UID_ROOT, GID_WHEEL, 0600, "kni");
+		UID_ROOT, GID_WHEEL, 0600, KNI_DEVICE);
 	if (rte_kni_cdev->cdev == NULL) {
 		mtx_destroy(&rte_kni_cdev->mtx);
 		free(rte_kni_cdev, M_RTE_KNI_CDEV);
