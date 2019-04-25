@@ -10,12 +10,9 @@ __FBSDID("$FreeBSD$");
 #include <sys/bus.h>
 #include <sys/conf.h>
 #include <sys/kernel.h>
-#include <sys/malloc.h>
 #include <sys/module.h>
 
 #include "kni_cdev.h"
-
-MALLOC_DEFINE(M_RTE_KNI, "rte_kni", "rte_kni allocations");
 
 static int
 kni_mod_load(void)
@@ -25,6 +22,7 @@ kni_mod_load(void)
 	error = kni_cdev_init();
 	if (error != 0)
 		return error;
+
 	return 0;
 }
 
@@ -36,6 +34,7 @@ kni_mod_unload(void)
 	error = kni_cdev_free();
 	if (error != 0)
 		return error;
+
 	return 0;
 }
 
