@@ -19,7 +19,16 @@
 
 #define KNI_NET_MEDIATYPE (IFM_ETHER | IFM_10G_T | IFM_FDX)
 
+extern struct mtx kni_net_softc_tailq_mtx;
+#define KNI_NET_TAILQ_LOCK_INIT() mtx_init(&kni_net_softc_tailq_mtx, \
+    "kni_tailq", NULL, MTX_DEF)
+#define KNI_NET_TAILQ_LOCK_FREE() mtx_destroy(&kni_net_softc_tailq_mtx)
+#define KNI_NET_TAILQ_LOCK() mtx_lock(&kni_net_softc_tailq_mtx)
+#define KNI_NET_TAILQ_UNLOCK() mtx_unlock(&kni_net_softc_tailq_mtx)
+
 TAILQ_HEAD(kni_net_softc_tailq, kni_net_softc);
+extern struct kni_net_softc_tailq kn_softc_tq_head;
+
 struct kni_net_softc {
     struct mtx mtx;
     char name[RTE_KNI_NAMESIZE];

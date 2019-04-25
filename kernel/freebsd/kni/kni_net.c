@@ -32,6 +32,7 @@ struct kni_net_softc_tailq kn_softc_tq_head;
 int
 kni_net_init(void)
 {
+    KNI_NET_TAILQ_LOCK_INIT();
     TAILQ_INIT(&kn_softc_tq_head);
     return 0;
 }
@@ -68,6 +69,7 @@ kni_net_free(void)
         if (error != 0)
             return error;
     }
+    KNI_NET_TAILQ_LOCK_FREE();
     return 0;
 }
 
@@ -185,10 +187,13 @@ kni_net_if_create(const struct rte_kni_device_info *dev_info)
     struct ifnet *ifp;
 
     /* Validate that the interface doesn't already exist */
+    KNI_NET_TAILQ_LOCK();
     if (kni_net_softc_by_name(dev_info->name) != NULL) {
+        KNI_NET_TAILQ_UNLOCK();
         printf("kni: interface %s already exists\n", dev_info->name);
         return EINVAL;
     }
+    KNI_NET_TAILQ_UNLOCK();
 
     /* Create new private data for this interface */
     sc = malloc(sizeof (struct kni_net_softc),
@@ -260,7 +265,9 @@ kni_net_if_create(const struct rte_kni_device_info *dev_info)
     sc->hwaddr[5] = 0xF0;
     ether_ifattach(ifp, sc->hwaddr);
 
+    KNI_NET_TAILQ_LOCK();
     TAILQ_INSERT_TAIL(&kn_softc_tq_head, sc, tailq);
+    KNI_NET_TAILQ_UNLOCK();
 
     printf("kni: created new interface %s\n", dev_info->name);
     return 0;
@@ -286,7 +293,9 @@ kni_net_if_destroy(const struct rte_kni_device_info *dev_info)
     ifmedia_removeall(&sc->ifmedia);
     if_free(sc->ifp);
 
+    KNI_NET_TAILQ_LOCK();
     TAILQ_REMOVE(&kn_softc_tq_head, sc, tailq);
+    KNI_NET_TAILQ_UNLOCK();
     printf("kni: interface %s was removed\n", dev_info->name);
     KNI_NET_LOCK_FREE(sc);
     free(sc, M_RTE_KNI_NET);
