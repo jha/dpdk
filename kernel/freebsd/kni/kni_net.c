@@ -231,8 +231,12 @@ kni_net_if_create(const struct rte_kni_device_info *dev_info)
 
     sc->mbuf_size = dev_info->mbuf_size;
     if (dev_info->mtu) {
-        sc->mtu = mtu;
-        kni_net_if_mtu(ifp, sc, dev_info->mtu);
+        struct ifreq ifr;
+
+        ifr.ifr_mtu = dev_info->mtu;
+        if (kni_net_if_mtu(ifp, sc, &ifr) == 0) {
+            sc->mtu = dev_info->mtu;
+        }
     }
 
     /* Set the media type to Ethernet/duplex/speed */
