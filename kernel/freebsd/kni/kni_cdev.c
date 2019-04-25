@@ -18,6 +18,7 @@ __FBSDID("$FreeBSD$");
 #include <rte_kni_common.h>
 
 #include "kni_cdev.h"
+#include "kni_net.h"
 
 MALLOC_DEFINE(M_RTE_KNI_CDEV, "rte_kni_cdev", "rte_kni_cdev allocations");
 
@@ -29,6 +30,12 @@ kni_cdev_open(struct cdev *dev, int oflags, int devtype, struct thread *td)
 	if (!mtx_trylock(&rte_kni_cdev->mtx)) {
 		printf("kni: only one instance is allowed access to KNI\n");
 		return EBUSY;
+	}
+
+	if (kni_net_init() != 0) {
+		printf("kni: failed to initialize network\n");
+		mtx_unlock(&rte_kni_cdev->mtx);
+		return EINVAL;
 	}
 
 	printf("kni: dpdk application has been opened\n");
@@ -56,12 +63,10 @@ kni_cdev_ioctl(struct cdev *dev,
 
 	switch (cmd) {
 	case RTE_KNI_IOCTL_CREATE:
-		printf("kni: RTE_KNI_IOCTL_CREATE\n");
-		ret = -ENOMEM;
+		ret = -kni_net_if_create(dev_info);
 		break;
 	case RTE_KNI_IOCTL_RELEASE:
-		printf("kni: RTE_KNI_IOCTL_RELEASE\n");
-		ret = -ENOMEM;
+		ret = -kni_net_if_destroy(dev_info);
 		break;
 	default:
 		printf("kni: default ioctl handler\n");
@@ -76,6 +81,11 @@ kni_cdev_close(struct cdev *dev, int fflag, int devtype, struct thread *td)
 {
 	if (rte_kni_cdev == NULL)
 		return EBUSY;
+
+	if (kni_net_free() != 0) {
+		printf("kni: unable to free net interfaces\n");
+		return EBUSY;
+	}
 
 	mtx_unlock(&rte_kni_cdev->mtx);
 	printf("kni: dpdk application has been closed\n");
