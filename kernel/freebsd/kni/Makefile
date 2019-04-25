@@ -19,6 +19,6 @@ MODULE_CFLAGS += -include $(RTE_OUTPUT)/include/rte_config.h
 #
 # all source are stored in SRCS-y
 #
-SRCS-y := kni.c kni_cdev.c kni_cdev.h kni_net.c kni_net.h
+SRCS-y := kni.c kni_cdev.c kni_cdev.h kni_net.c kni_net.h kni_worker.c kni_worker.h kni_fifo.h
 
 include $(RTE_SDK)/mk/rte.bsdmodule.mk
